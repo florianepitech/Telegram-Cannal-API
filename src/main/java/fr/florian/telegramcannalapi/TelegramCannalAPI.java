@@ -5,6 +5,7 @@ import fr.florian.telegramcannalapi.object.TelegramMessage;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -60,10 +61,22 @@ public class TelegramCannalAPI {
     private void sendMessage(TelegramMessage telegramMessage) throws IOException {
         String urlString = "https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=%s";
         urlString = String.format(urlString, botId, cannalId, telegramMessage.getContent());
+        send(urlString);
+    }
 
-        System.out.println(urlString);
 
-        URL url = new URL(urlString);
+    private void sendStickers(TelegramMessage telegramMessage) throws IOException {
+        String urlString = "https://api.telegram.org/bot%s/sendSticker?chat_id=%s&sticker=%s";
+        urlString = String.format(urlString, botId, cannalId, telegramMessage.getContent());
+        send(urlString);
+    }
+
+    private void sendPicture(TelegramMessage telegramMessage) {
+
+    }
+
+    private void send(String request) throws IOException {
+        URL url = new URL(request);
         URLConnection conn = url.openConnection();
 
         StringBuilder sb = new StringBuilder();
@@ -74,15 +87,6 @@ public class TelegramCannalAPI {
             sb.append(inputLine);
         }
         String response = sb.toString();
-    }
-
-
-    private void sendStickers(TelegramMessage telegramMessage) {
-
-    }
-
-    private void sendPicture(TelegramMessage telegramMessage) {
-
     }
 
 }
