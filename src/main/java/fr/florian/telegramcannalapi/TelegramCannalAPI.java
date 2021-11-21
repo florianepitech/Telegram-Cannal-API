@@ -1,5 +1,6 @@
 package fr.florian.telegramcannalapi;
 
+import fr.florian.telegramcannalapi.enums.TelegramMessageType;
 import fr.florian.telegramcannalapi.object.TelegramMessage;
 
 import java.io.*;
@@ -52,6 +53,10 @@ public class TelegramCannalAPI {
 
     public void addMessageToQueue(TelegramMessage telegramMessage) {
         messages.add(telegramMessage);
+    }
+
+    public void addMessageToQueue(String message) {
+        messages.add(new TelegramMessage(TelegramMessageType.MESSAGE, message));
     }
 
     /*
