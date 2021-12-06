@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -65,14 +66,14 @@ public class TelegramCannalAPI {
 
     private void sendMessage(TelegramMessage telegramMessage) throws IOException {
         String urlString = "https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=%s";
-        urlString = String.format(urlString, botId, cannalId, telegramMessage.getContent());
+        urlString = String.format(urlString, botId, cannalId, URLEncoder.encode(telegramMessage.getContent(), StandardCharsets.UTF_8));
         send(urlString);
     }
 
 
     private void sendStickers(TelegramMessage telegramMessage) throws IOException {
         String urlString = "https://api.telegram.org/bot%s/sendSticker?chat_id=%s&sticker=%s";
-        urlString = String.format(urlString, botId, cannalId, telegramMessage.getContent());
+        urlString = String.format(urlString, botId, cannalId, URLEncoder.encode(telegramMessage.getContent(), StandardCharsets.UTF_8));
         send(urlString);
     }
 
