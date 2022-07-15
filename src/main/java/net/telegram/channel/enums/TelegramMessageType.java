@@ -1,4 +1,4 @@
-package fr.florian.telegramcannalapi.enums;
+package net.telegram.channel.enums;
 
 public enum TelegramMessageType {
 

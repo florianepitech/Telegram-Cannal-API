@@ -1,6 +1,6 @@
-package fr.florian.telegramcannalapi.object;
+package net.telegram.channel.object;
 
-import fr.florian.telegramcannalapi.enums.TelegramMessageType;
+import net.telegram.channel.enums.TelegramMessageType;
 
 public class TelegramMessage {
 
