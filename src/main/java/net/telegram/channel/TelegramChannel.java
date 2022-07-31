@@ -1,17 +1,14 @@
 package net.telegram.channel;
 
+import net.httpclient.wrapper.exception.HttpClientException;
+import net.httpclient.wrapper.exception.HttpServerException;
+import net.httpclient.wrapper.session.HttpClientSessionBasic;
 import net.telegram.channel.enums.TelegramMessageType;
-import net.telegram.channel.exception.HttpClientException;
-import net.telegram.channel.exception.HttpServerException;
-import net.telegram.channel.network.HttpClientSession;
 import net.telegram.channel.object.TelegramMessage;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -19,23 +16,33 @@ import java.util.concurrent.TimeUnit;
 
 public class TelegramChannel {
 
-    private final String botId;
+    private String botId;
     private String cannalId;
-    private final HttpClientSession httpClientSession;
+    private HttpClientSessionBasic httpClientSession;
     private Boolean start = false;
 
     private final Object lock = new Object();
     private final ArrayList<TelegramMessage> messages = new ArrayList<>();
 
+    public TelegramChannel() {
+        String telegramChannelId = System.getProperty("telegramChannelId");
+        String telegramBotId = System.getProperty("telegramBotId");
+        if (telegramChannelId == null || telegramChannelId.isEmpty())
+            throw new IllegalArgumentException("telegramChannelId property is not set");
+        if (telegramBotId == null || telegramBotId.isEmpty())
+            throw new IllegalArgumentException("telegramBotId property is not set");
+        construct(telegramChannelId, telegramBotId);
+    }
+
     public TelegramChannel(String botId, String cannalId) {
+        construct(botId, cannalId);
+    }
+
+    private void construct(String botId, String cannalId) {
         this.botId = botId;
         this.cannalId = cannalId;
         // if (!cannalId.startsWith("@")) this.cannalId = "@" + this.cannalId;
-        try {
-            this.httpClientSession = new HttpClientSession();
-        } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
-            throw new RuntimeException(e);
-        }
+        this.httpClientSession = new HttpClientSessionBasic();
     }
 
     public void start() {
