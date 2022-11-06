@@ -2,9 +2,10 @@ package net.telegram.channel;
 
 import net.httpclient.wrapper.exception.HttpClientException;
 import net.httpclient.wrapper.exception.HttpServerException;
-import net.httpclient.wrapper.session.HttpClientSessionBasic;
+import net.httpclient.wrapper.session.HttpClientSession;
 import net.telegram.channel.enums.TelegramMessageType;
 import net.telegram.channel.object.TelegramMessage;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -18,7 +19,7 @@ public class TelegramChannel {
 
     private String botId;
     private String cannalId;
-    private HttpClientSessionBasic httpClientSession;
+    private HttpClientSession httpClientSession;
     private Boolean start = false;
 
     private final Object lock = new Object();
@@ -42,7 +43,7 @@ public class TelegramChannel {
         this.botId = botId;
         this.cannalId = cannalId;
         // if (!cannalId.startsWith("@")) this.cannalId = "@" + this.cannalId;
-        this.httpClientSession = new HttpClientSessionBasic();
+        this.httpClientSession = new HttpClientSession();
     }
 
     public void start() {
@@ -79,6 +80,11 @@ public class TelegramChannel {
         messages.add(new TelegramMessage(TelegramMessageType.MESSAGE, message));
     }
 
+    public void addMessageToQueue(String message, Object... args) {
+        ParameterizedMessage pm = new ParameterizedMessage(message, args);
+        addMessageToQueue(pm.getFormattedMessage());
+    }
+
     /*
      *      PRIVATE FUNCTION
      */
@@ -86,6 +92,11 @@ public class TelegramChannel {
     public void forceSendMessage(String message) throws HttpClientException, IOException, HttpServerException {
         TelegramMessage tm = new TelegramMessage(TelegramMessageType.MESSAGE, message);
         sendMessage(tm);
+    }
+
+    public void forceSendMessage(String message, Object... args) throws HttpClientException, IOException, HttpServerException {
+        ParameterizedMessage pm = new ParameterizedMessage(message, args);
+        forceSendMessage(pm.getFormattedMessage());
     }
 
     public void forceSendSticker(String sticker) throws HttpClientException, IOException, HttpServerException {
